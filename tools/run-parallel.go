@@ -1,6 +1,6 @@
 package tools
 
-func threadTask(startIndex int, size int, doneChannel chan bool, body func(int)) {
+func singleGoRoutineTask(startIndex int, size int, doneChannel chan bool, body func(int)) {
 	for index := startIndex; index < size+startIndex; index++ {
 		body(index)
 	}
@@ -30,9 +30,9 @@ func ForAll(start int, end int, grouping int, body func(int)) {
 	for threadNumber := 0; threadNumber < grouping; threadNumber++ {
 		startingIndex := threadNumber*normalRoutineLoad + start
 		if threadNumber == grouping-1 {
-			go threadTask(startingIndex, lastRoutineLoad, waitingChannel, body)
+			go singleGoRoutineTask(startingIndex, lastRoutineLoad, waitingChannel, body)
 		} else {
-			go threadTask(startingIndex, normalRoutineLoad, waitingChannel, body)
+			go singleGoRoutineTask(startingIndex, normalRoutineLoad, waitingChannel, body)
 		}
 	}
 
