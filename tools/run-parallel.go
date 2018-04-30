@@ -12,8 +12,8 @@ func threadTask(startIndex int, size int, doneChannel chan bool, body func(int))
 // the body of the for
 func ForAll(start int, end int, grouping int, body func(int)) {
 	// base info and dummy proofing
-	times := end - start
-	if times > grouping {
+	times := end - start + 1
+	if times < grouping {
 		grouping = times
 	}
 
@@ -23,19 +23,21 @@ func ForAll(start int, end int, grouping int, body func(int)) {
 	// loads
 	normalRoutineLoad :=
 		times / grouping
-	firstRoutineLoad :=
+	lastRoutineLoad :=
 		normalRoutineLoad + (times % grouping)
 
 	// running thread
 	for threadNumber := 0; threadNumber < grouping; threadNumber++ {
-		startingIndex := threadNumber * normalRoutineLoad
-		if threadNumber == 0 {
-			go threadTask(startingIndex, firstRoutineLoad, waitingChannel, body)
+		startingIndex := threadNumber*normalRoutineLoad + start
+		if threadNumber == grouping-1 {
+			go threadTask(startingIndex, lastRoutineLoad, waitingChannel, body)
 		} else {
 			go threadTask(startingIndex, normalRoutineLoad, waitingChannel, body)
 		}
 	}
 
 	// waiting for all threads to exit
-	<-waitingChannel
+	for g := 0; g < grouping; g++ {
+		<-waitingChannel
+	}
 }
