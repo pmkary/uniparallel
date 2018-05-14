@@ -23,4 +23,16 @@ func main() {
 	tools.ForAll(2, 10, 4, func(index int) {
 		fmt.Println(index)
 	})
+
+	// You can also use the SpinLock to lock and unlock
+	// processes to bring some order...
+	fmt.Println("This ForAll prints indexes from 1 to 10 with SpinLock")
+	var lock tools.SpinLock
+	counter := 0
+	tools.ForAll(1, 10, 4, func(index int) {
+		lock.Lock()
+		counter++
+		lock.Unlock()
+	})
+	fmt.Println(counter)
 }
