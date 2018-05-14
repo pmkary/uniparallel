@@ -22,6 +22,16 @@ func (lock *SpinLock) Lock() {
 	}
 }
 
+// RunSafe gets a function (`body`) and runs it
+// inside a locked and safe runtime time, it first
+// locks the environment, exectues the code and
+// then unlocks the spinlock
+func (lock *SpinLock) RunSafe(body func()) {
+	lock.Lock()
+	body()
+	lock.Unlock()
+}
+
 func (lock *SpinLock) tryLock() bool {
 	return atomic.CompareAndSwapUint32(&lock.status, 0, 1)
 }

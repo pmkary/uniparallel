@@ -29,6 +29,14 @@ parallel.ForAll(1, 10, 4, func(index int) {
 })
 ```
 
+A higher level abstract is to use `RunSafe`. It locks the runtime and then runs a given function and unlocks as soon as the function ends. It's a very bad way to use the spin lock, very high footprint and so bad for the performance, but it's a pretty abstract:
+
+```go
+parallel.RunSafe(func() {
+    someFunctionRunningInLockedRuntime()
+})
+```
+
 ### Terminal & I/O
 As UniParallel is intended for use in a university course it has some easy functionality to handle data and terminal I/O to make it easier to write educational software
 
