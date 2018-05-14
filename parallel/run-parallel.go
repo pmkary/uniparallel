@@ -1,4 +1,4 @@
-package tools
+package parallel
 
 func singleGoRoutineTask(startIndex int, size int, doneChannel chan bool, body func(int)) {
 	for index := startIndex; index < size+startIndex; index++ {
